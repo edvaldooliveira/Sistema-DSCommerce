@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -13,11 +14,11 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nome;
+    private String name;
 
     @Column(columnDefinition = "TEXT")
     private String description;
-    private double price;
+    private Double price;
     private String imgUrl;
 
     @ManyToMany
@@ -27,15 +28,14 @@ public class Product {
     private Set<Category> categories = new HashSet<>();
 
     @OneToMany(mappedBy = "id.product")
-    private Set<OrderItem>  items = new HashSet<>();
+    private Set<OrderItem> items = new HashSet<>();
 
-    public Product(){
-
+    public Product() {
     }
 
-    public Product(Long id, String nome, String description, double price, String imgUrl) {
+    public Product(Long id, String name, String description, Double price, String imgUrl) {
         this.id = id;
-        this.nome = nome;
+        this.name = name;
         this.description = description;
         this.price = price;
         this.imgUrl = imgUrl;
@@ -49,12 +49,12 @@ public class Product {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getName() {
+        return name;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -65,11 +65,11 @@ public class Product {
         this.description = description;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -89,7 +89,22 @@ public class Product {
         return items;
     }
 
-    public List<Order> getOrders(){
+    public List<Order> getOrders() {
         return items.stream().map(x -> x.getOrder()).toList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Product product = (Product) o;
+
+        return Objects.equals(id, product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }
